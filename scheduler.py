@@ -18,6 +18,9 @@ class Scheduler:
         self.sim_time = SimTime(time = 0, delta = 0)
         self.queue = PriorityQueue()
 
+    def reset(self):
+        self.queue = PriorityQueue()
+
     def schedule(self, callable, args, delay = 0):
         if delay == 0:
             sim_time = SimTime(time = self.sim_time.time,
