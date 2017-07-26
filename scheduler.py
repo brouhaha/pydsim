@@ -17,6 +17,10 @@ class Scheduler:
     def __init__(self):
         self.sim_time = SimTime(time = 0, delta = 0)
         self.queue = PriorityQueue()
+        self.debug = False
+
+    def set_debug(self, value):
+        self.debug = value
 
     def reset(self):
         self.queue = PriorityQueue()
@@ -35,14 +39,26 @@ class Scheduler:
         return item
 
     def remove(self, item):
-        self.queue.queue.remove(item)
+        # XXX for now, just replace with a dummy element
+        item2 = Item(sim_time = item.sim_time, callable = None, args = None)
+        i = self.queue.queue.index(item)
+        self.queue.queue[i] = item2
 
     def run(self, max_events = 0):
+        if self.debug:
+            print("** time: ", self.sim_time)
         count = 0
         while (not self.queue.empty()) and (max_events == 0 or count < max_events):
             item = self.queue.get()
+            # XXX if a dummy element (previously deleted), ignore
+            if item.callable == None:
+                continue
             if item.sim_time != self.sim_time:
                 self.sim_time = item.sim_time
+                if self.debug:
+                    print("** time: ", self.sim_time)
+            if self.debug:
+                print(item)
             item.callable(*item.args)
             count += 1
         return count
