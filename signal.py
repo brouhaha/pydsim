@@ -54,8 +54,8 @@ class Signal:
         self.value = value
         for comp in self.components:
             if Signal.__sc_debug__ or self.debug:
-                print("updating %s" % comp.name)
-            comp.update()
+                print("scheduling update of %s" % comp.name)
+            self.scheduler.schedule(comp.update, (), delay = 0)
 
     def set(self, value, delay = 0):
         if value == self.value:
