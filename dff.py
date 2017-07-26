@@ -26,30 +26,30 @@ class DFF(Component):
             not_q = Signal(scheduler)
         self.not_q     = not_q
 
-        self.sr1_q     = Signal(scheduler)
-        self.sr1_not_q = Signal(scheduler)
-        self.sr2_q     = Signal(scheduler)
-        self.sr2_not_q = Signal(scheduler)
+        self.a = Signal(scheduler, name="a")
+        self.s = Signal(scheduler, name="s")
+        self.r = Signal(scheduler, name="r")
+        self.b = Signal(scheduler, name="b")
 
         self.n1 = NAND(scheduler,
-                       inputs = (self.not_pre, self.sr2_not_q, self.sr1_not_q),
-                       output = self.sr1_q)
+                       inputs = (self.not_pre, self.b,       self.s),
+                       output = self.a)
         self.n2 = NAND(scheduler,
-                       inputs = (self.not_clr, self.clk,       self.sr1_q),
-                       output = self.sr1_not_q)
+                       inputs = (self.not_clr, self.clk,     self.a),
+                       output = self.s)
 
         self.n3 = NAND(scheduler,
-                       inputs = (self.clk,     self.sr1_not_q, self.sr2_not_q),
-                       output = self.sr2_q)
+                       inputs = (self.clk,     self.s,       self.b),
+                       output = self.r)
         self.n4 = NAND(scheduler,
-                       inputs = (self.d,       self.not_clr,   self.sr2_q),
-                       output = self.sr2_not_q)
+                       inputs = (self.d,       self.not_clr, self.r),
+                       output = self.b)
 
         self.n5 = NAND(scheduler,
-                       inputs = (self.not_pre, self.sr1_not_q, self.not_q),
+                       inputs = (self.not_pre, self.s,       self.not_q),
                        output = self.q)
         self.n6 = NAND(scheduler,
-                       inputs = (self.not_clr, self.sr2_q,     self.q),
+                       inputs = (self.not_clr, self.r,       self.q),
                        output = self.not_q)
 
 if __name__ == '__main__':
